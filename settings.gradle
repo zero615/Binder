@@ -1,0 +1,5 @@
+rootProject.name = "Support"
+include ':app'
+include ':binder'
+
+include ':box'
