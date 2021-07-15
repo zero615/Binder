@@ -1,5 +1,3 @@
-rootProject.name = "Support"
+rootProject.name = "binder"
 include ':app'
-include ':binder'
-
-include ':box'
+include ':library'

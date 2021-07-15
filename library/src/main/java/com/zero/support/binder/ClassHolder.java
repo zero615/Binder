@@ -12,7 +12,7 @@ public class ClassHolder {
         Method[] methods = cls.getMethods();
         this.methods = new HashMap<>(methods.length);
         MethodHolder methodHolder;
-        Name nameAno = cls.getAnnotation(Name.class);
+        BinderName nameAno = cls.getAnnotation(BinderName.class);
         if (nameAno != null) {
             this.name = nameAno.value();
         } else {

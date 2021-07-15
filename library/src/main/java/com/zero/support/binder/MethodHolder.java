@@ -16,7 +16,7 @@ public class MethodHolder {
         this.method = method;
         this.types = method.getGenericParameterTypes();
         this.returnType = method.getGenericReturnType();
-        Name nameAno = method.getAnnotation(Name.class);
+        BinderName nameAno = method.getAnnotation(BinderName.class);
         if (nameAno != null) {
             this.name = nameAno.value();
         } else {
