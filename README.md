@@ -14,7 +14,7 @@ allprojects {
 - **在应用模块的`build.gradle`添加：**
 ```
 dependencies {
-        implementation 'com.github.zero615:binder:1.0.0'
+        implementation 'com.github.zero615.Binder:binder:1.0.0'
 }
 ```
 
@@ -27,5 +27,22 @@ dependencies {
     //client端
     ITest test = Binder.asInterface(binder,ITest.class);
 ```
+
+## 作为 sdk集成
+```
+ dependencies {
+    ...
+    classpath 'com.github.zero615.Binder:compiler:1.0.0'
+ }
+```
+ 
+- **在应用模块的`build.gradle`添加：**
+```
+    apply plugin: 'SdkBinder'
+
+    插件自动在BuildConfig同级目录下导入库
+```
+
+
 
 
