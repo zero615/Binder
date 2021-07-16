@@ -1,15 +1,12 @@
-package com.zero.support.binder.tools;
+package com.zero.support.binder;
 
 import android.os.Parcel;
-
-import com.zero.support.binder.Binder;
-import com.zero.support.binder.ParcelCreator;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 @SuppressWarnings("ALL")
-public class ArrayCreator implements ParcelCreator<Object[]> {
+class ArrayCreator implements ParcelCreator<Object[]> {
 
     @Override
     public void writeToParcel(Parcel parcel, Object[] object, Type type, Class<Object[]> rawType) throws Exception {

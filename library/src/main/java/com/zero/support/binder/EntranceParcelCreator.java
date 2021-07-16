@@ -1,4 +1,4 @@
-package com.zero.support.binder.tools;
+package com.zero.support.binder;
 
 import android.os.Bundle;
 import android.os.IBinder;
@@ -15,7 +15,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 @SuppressWarnings("all")
-public class EntranceParcelCreator implements ParcelCreator<Object> {
+class EntranceParcelCreator implements ParcelCreator<Object> {
 
     @Override
     public void writeToParcel(Parcel reply, Object object, Type type, Class rawType) throws Exception {

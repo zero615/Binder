@@ -3,7 +3,7 @@ package com.zero.support.binder;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-public class MethodHolder {
+class MethodHolder {
     public String name;
     public Method method;
     public Type[] types;

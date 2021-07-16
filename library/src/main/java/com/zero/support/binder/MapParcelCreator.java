@@ -1,5 +1,5 @@
 
-package com.zero.support.binder.tools;
+package com.zero.support.binder;
 
 import android.os.Parcel;
 
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("all")
-public class MapParcelCreator implements ParcelCreator<Map<?, ?>> {
+class MapParcelCreator implements ParcelCreator<Map<?, ?>> {
 
 
     @Override

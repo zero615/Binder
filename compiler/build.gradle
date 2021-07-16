@@ -1,0 +1,15 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.zero615'
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.squareup:javapoet:1.12.1'
+    implementation 'com.google.auto.service:auto-service:1.0-rc7'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc7'
+    implementation "com.android.tools.build:gradle:4.1.2"
+    implementation 'com.android.tools.build:gradle-api:4.2.1'
+}
+

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassHolder {
+class ClassHolder {
     private final Map<String, MethodHolder> methods;
     private final String name;
 

@@ -3,13 +3,7 @@ package com.zero.support.binder;
 import android.os.IBinder;
 import android.util.SparseArray;
 
-import com.zero.support.binder.tools.ArrayCreator;
-import com.zero.support.binder.tools.DynamicBinderCreator;
-import com.zero.support.binder.tools.EntranceParcelCreator;
-import com.zero.support.binder.tools.ListParcelCreator;
-import com.zero.support.binder.tools.MapParcelCreator;
-import com.zero.support.binder.tools.SparseArrayParcelCreator;
-
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -29,6 +23,7 @@ public class Binder {
         registerParcelCreator(List.class, new ListParcelCreator());
         registerParcelCreator(SparseArray.class, new SparseArrayParcelCreator());
         registerParcelCreator(Map.class, new MapParcelCreator());
+        registerParcelCreator(File.class, new FileParcelCreator());
     }
 
 
