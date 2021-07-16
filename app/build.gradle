@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-apply plugin: 'SdkBinder'
+//apply plugin: 'SdkBinder'
 
 android {
     compileSdkVersion 30
