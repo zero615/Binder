@@ -24,6 +24,7 @@ public class Binder {
         registerParcelCreator(SparseArray.class, new SparseArrayParcelCreator());
         registerParcelCreator(Map.class, new MapParcelCreator());
         registerParcelCreator(File.class, new FileParcelCreator());
+        registerParcelCreator(BinderSerializable.class,EntranceParcelCreator.GENERAL);
     }
 
 
@@ -36,9 +37,6 @@ public class Binder {
     }
 
 
-    static {
-        registerParcelCreator(List.class, new ListParcelCreator());
-    }
 
     public static BinderCreator<?> getBindCreator(Class<?> cls) {
         BinderCreator<?> creator = creators.get(cls);

@@ -51,6 +51,13 @@ public class DebugActivity extends ButtonActivity {
                 addButton(test.getTestObject().toString(), null);
             }
         });
+
+        addButton("invoke general", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addButton(test.getTestGeneralObject().toString(),null);
+            }
+        });
         addButton("lib", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

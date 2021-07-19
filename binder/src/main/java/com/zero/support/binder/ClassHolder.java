@@ -1,11 +1,15 @@
 package com.zero.support.binder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 class ClassHolder {
     private final Map<String, MethodHolder> methods;
+    private final Map<String, FieldHolder> fields;
     private final String name;
 
     public ClassHolder(Class<?> cls, boolean proxy) {
@@ -26,6 +30,19 @@ class ClassHolder {
                 this.methods.put(methodHolder.name, methodHolder);
             }
         }
+        Field[] fields = cls.getFields();
+        FieldHolder fieldHolder;
+        this.fields = new LinkedHashMap<>(fields.length);
+        for (Field field : fields) {
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            if (Modifier.isTransient(field.getModifiers())) {
+                continue;
+            }
+            fieldHolder = new FieldHolder(field);
+            this.fields.put(field.getName(), fieldHolder);
+        }
     }
 
     public String getName() {
@@ -34,5 +51,13 @@ class ClassHolder {
 
     public MethodHolder getBinderMethod(String name) {
         return methods.get(name);
+    }
+
+    public Map<String, FieldHolder> fields() {
+        return fields;
+    }
+
+    public FieldHolder getBinderField(String name) {
+        return this.fields.get(name);
     }
 }

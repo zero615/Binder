@@ -25,6 +25,13 @@ public class TestService  extends Service {
             public String getTest() {
                 return "xxxx";
             }
+
+            @Override
+            public TestGeneralObject getTestGeneralObject() {
+                TestGeneralObject testGeneralObject =  new TestGeneralObject();
+                testGeneralObject.test="test";
+                return testGeneralObject;
+            }
         },ITest.class);
     }
 }

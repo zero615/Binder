@@ -6,8 +6,11 @@ import java.util.Map;
 
 public interface ITest {
     @BinderName("getTestObject")
-    public Map<String,TestObject> getTestObject();
+    public Map<String, TestObject> getTestObject();
 
     @BinderName("getTest")
     String getTest();
+
+    @BinderName("TestGeneralObject")
+    TestGeneralObject getTestGeneralObject();
 }

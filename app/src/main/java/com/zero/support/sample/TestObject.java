@@ -6,6 +6,8 @@ import android.os.Parcelable;
 public class TestObject implements Parcelable {
     public String test;
 
+    public TestObject() {
+    }
 
     protected TestObject(Parcel in) {
     }

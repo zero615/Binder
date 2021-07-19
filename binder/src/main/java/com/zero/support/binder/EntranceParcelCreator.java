@@ -5,17 +5,12 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.zero.support.binder.Binder;
-import com.zero.support.binder.BinderCreator;
-import com.zero.support.binder.BinderException;
-import com.zero.support.binder.BinderSerializable;
-import com.zero.support.binder.ParcelCreator;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 @SuppressWarnings("all")
 class EntranceParcelCreator implements ParcelCreator<Object> {
+    static SerializableParcelCreator GENERAL = new SerializableParcelCreator();
 
     @Override
     public void writeToParcel(Parcel reply, Object object, Type type, Class rawType) throws Exception {
@@ -52,12 +47,12 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
             reply.writeStrongBinder((IBinder) object);
         } else {
             ParcelCreator creator = getCreator(rawType);
-            if (creator != null) {
+            if (creator != null && creator != this) {
                 creator.writeToParcel(reply, object, type, rawType);
             } else if (Parcelable.class.isAssignableFrom(rawType)) {
                 reply.writeParcelable((Parcelable) object, 0);
             } else {
-                throw new BinderException("not found creator for " + rawType);
+                GENERAL.writeToParcel(reply, object, type, rawType);
             }
         }
     }
@@ -101,12 +96,12 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
             object = data.readStrongBinder();
         } else {
             ParcelCreator creator = getCreator(rawType);
-            if (creator != null) {
+            if (creator != null && creator != this) {
                 object = creator.readFromParcel(data, type, rawType);
             } else if (Parcelable.class.isAssignableFrom(rawType)) {
                 object = data.readParcelable(rawType.getClassLoader());
             } else {
-                throw new BinderException("not found creator for " + rawType);
+                object = GENERAL.readFromParcel(data, type, rawType);
             }
         }
         return object;
