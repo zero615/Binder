@@ -152,7 +152,7 @@ public static final String BINDER_NAME = "package com.zero.support.binder;\n" +
         "import java.lang.annotation.RetentionPolicy;\n" +
         "import java.lang.annotation.Target;\n" +
         "\n" +
-        "@Target({ElementType.TYPE, ElementType.METHOD})\n" +
+        "@Target({ElementType.TYPE, ElementType.METHOD,ElementType.FIELD})\n" +
         "@Retention(RetentionPolicy.RUNTIME)\n" +
         "public @interface BinderName {\n" +
         "    String value();\n" +
