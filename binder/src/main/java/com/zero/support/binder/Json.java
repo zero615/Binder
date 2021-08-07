@@ -101,7 +101,7 @@ public class Json {
         }
     }
 
-    interface ObjectCreator<T> {
+    public interface ObjectCreator<T> {
         void writeBinderObject(BinderObject object, T t, Type type, Class<T> rawCls) throws BinderException;
 
         T createObject(BinderObject object, Type type, Class<T> rawCls) throws BinderException;

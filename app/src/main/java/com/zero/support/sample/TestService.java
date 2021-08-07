@@ -27,6 +27,11 @@ public class TestService  extends Service {
             }
 
             @Override
+            public String[] getTests() {
+                return new String[]{"1","2"};
+            }
+
+            @Override
             public TestGeneralObject getTestGeneralObject() {
                 TestGeneralObject testGeneralObject =  new TestGeneralObject();
                 testGeneralObject.test="test";

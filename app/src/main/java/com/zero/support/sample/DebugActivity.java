@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class DebugActivity extends ButtonActivity {
     private ITest test;
@@ -23,6 +24,12 @@ public class DebugActivity extends ButtonActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addButton("tests", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addButton(Arrays.toString(test.getTests())+"",null);
+            }
+        });
         addButton("bind", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,8 +67,11 @@ public class BinderObject {
             if (subType == null) {
                 subType = String.class;
             }
+            if (objects==null){
+                return;
+            }
             Class<?> subCls = Json.getRawClass(subType);
-            Json.ObjectCreator creator = Json.getCreator(type);
+            Json.ObjectCreator creator = Json.getCreator(subType);
             for (Object o : objects) {
                 BinderObject binderObject = new BinderObject();
                 creator.writeBinderObject(binderObject, o, subType, subCls);
@@ -78,8 +82,21 @@ public class BinderObject {
         }
 
         @Override
-        public Object[] createObject(BinderObject object, Type type, Class<Object[]> rawCls) {
-            return new Object[0];
+        public Object[] createObject(BinderObject object, Type type, Class<Object[]> rawCls) throws BinderException {
+            if (object==null||object.value==null){
+                return null;
+            }
+            JSONArray array  = object.getJsonArray();
+            Class<?> subType = rawCls.getComponentType();
+            Object[] result = (Object[]) Array.newInstance(rawCls,array.length());
+            BinderObject binderObject = new BinderObject();
+            for (int i = 0; i < array.length(); i++) {
+                binderObject.reset();
+                binderObject.setValue(array.opt(i));
+                Json.ObjectCreator creator = Json.getCreator(subType);
+                creator.createObject(binderObject, subType, Json.getRawClass(subType));
+            }
+            return result;
         }
     }
 

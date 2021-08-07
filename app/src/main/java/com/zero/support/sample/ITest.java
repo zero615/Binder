@@ -10,7 +10,8 @@ public interface ITest {
 
     @BinderName("getTest")
     String getTest();
-
+    @BinderName("getTests")
+    String[] getTests();
     @BinderName("TestGeneralObject")
     TestGeneralObject getTestGeneralObject();
 }
