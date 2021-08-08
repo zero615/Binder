@@ -159,10 +159,13 @@ public static final String BINDER_NAME = "package com.zero.support.binder;\n" +
         "}\n";
 public static final String BINDER_OBJECT = "package com.zero.support.binder;\n" +
         "\n" +
+        "import android.util.Log;\n" +
+        "\n" +
         "import org.json.JSONArray;\n" +
         "import org.json.JSONException;\n" +
         "import org.json.JSONObject;\n" +
         "\n" +
+        "import java.lang.reflect.Array;\n" +
         "import java.lang.reflect.Type;\n" +
         "import java.util.ArrayList;\n" +
         "import java.util.HashMap;\n" +
@@ -225,8 +228,11 @@ public static final String BINDER_OBJECT = "package com.zero.support.binder;\n" 
         "            if (subType == null) {\n" +
         "                subType = String.class;\n" +
         "            }\n" +
+        "            if (objects==null){\n" +
+        "                return;\n" +
+        "            }\n" +
         "            Class<?> subCls = Json.getRawClass(subType);\n" +
-        "            Json.ObjectCreator creator = Json.getCreator(type);\n" +
+        "            Json.ObjectCreator creator = Json.getCreator(subCls);\n" +
         "            for (Object o : objects) {\n" +
         "                BinderObject binderObject = new BinderObject();\n" +
         "                creator.writeBinderObject(binderObject, o, subType, subCls);\n" +
@@ -237,8 +243,22 @@ public static final String BINDER_OBJECT = "package com.zero.support.binder;\n" 
         "        }\n" +
         "\n" +
         "        @Override\n" +
-        "        public Object[] createObject(BinderObject object, Type type, Class<Object[]> rawCls) {\n" +
-        "            return new Object[0];\n" +
+        "        public Object[] createObject(BinderObject object, Type type, Class<Object[]> rawCls) throws BinderException {\n" +
+        "            if (object==null||object.value==null){\n" +
+        "                return null;\n" +
+        "            }\n" +
+        "            Log.e(\"xgf\", \"createObject:array  \"+object.value );\n" +
+        "            JSONArray array  = object.getJsonArray();\n" +
+        "            Class<?> subType = rawCls.getComponentType();\n" +
+        "            Object[] result = (Object[]) Array.newInstance(subType,array.length());\n" +
+        "            BinderObject binderObject = new BinderObject();\n" +
+        "            for (int i = 0; i < array.length(); i++) {\n" +
+        "                binderObject.reset();\n" +
+        "                binderObject.setValue(array.opt(i));\n" +
+        "                Json.ObjectCreator creator = Json.getCreator(subType);\n" +
+        "                result[i] = creator.createObject(binderObject, subType, Json.getRawClass(subType));\n" +
+        "            }\n" +
+        "            return result;\n" +
         "        }\n" +
         "    }\n" +
         "\n" +
@@ -997,7 +1017,7 @@ public static final String JSON = "package com.zero.support.binder;\n" +
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    interface ObjectCreator<T> {\n" +
+        "    public interface ObjectCreator<T> {\n" +
         "        void writeBinderObject(BinderObject object, T t, Type type, Class<T> rawCls) throws BinderException;\n" +
         "\n" +
         "        T createObject(BinderObject object, Type type, Class<T> rawCls) throws BinderException;\n" +
