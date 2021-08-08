@@ -2,6 +2,7 @@ package com.zero.support.sample;
 
 import com.zero.support.binder.BinderName;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ITest {
@@ -13,5 +14,5 @@ public interface ITest {
     @BinderName("getTests")
     String[] getTests();
     @BinderName("TestGeneralObject")
-    TestGeneralObject getTestGeneralObject();
+    List<TestGeneralObject> getTestGeneralObject();
 }

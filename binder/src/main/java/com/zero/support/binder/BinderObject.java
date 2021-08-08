@@ -1,5 +1,7 @@
 package com.zero.support.binder;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class BinderObject {
                 return;
             }
             Class<?> subCls = Json.getRawClass(subType);
-            Json.ObjectCreator creator = Json.getCreator(subType);
+            Json.ObjectCreator creator = Json.getCreator(subCls);
             for (Object o : objects) {
                 BinderObject binderObject = new BinderObject();
                 creator.writeBinderObject(binderObject, o, subType, subCls);
@@ -86,15 +88,16 @@ public class BinderObject {
             if (object==null||object.value==null){
                 return null;
             }
+            Log.e("xgf", "createObject:array  "+object.value );
             JSONArray array  = object.getJsonArray();
             Class<?> subType = rawCls.getComponentType();
-            Object[] result = (Object[]) Array.newInstance(rawCls,array.length());
+            Object[] result = (Object[]) Array.newInstance(subType,array.length());
             BinderObject binderObject = new BinderObject();
             for (int i = 0; i < array.length(); i++) {
                 binderObject.reset();
                 binderObject.setValue(array.opt(i));
                 Json.ObjectCreator creator = Json.getCreator(subType);
-                creator.createObject(binderObject, subType, Json.getRawClass(subType));
+                result[i] = creator.createObject(binderObject, subType, Json.getRawClass(subType));
             }
             return result;
         }

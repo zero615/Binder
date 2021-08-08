@@ -8,7 +8,9 @@ import androidx.annotation.Nullable;
 
 import com.zero.support.binder.Binder;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TestService  extends Service {
@@ -18,7 +20,9 @@ public class TestService  extends Service {
         return Binder.asBinder(new ITest(){
             @Override
             public Map<String, TestObject> getTestObject() {
-                return new HashMap<>();
+                Map map =  new HashMap<>();
+                map.put("aaa",new TestObject());
+                return map;
             }
 
             @Override
@@ -32,10 +36,10 @@ public class TestService  extends Service {
             }
 
             @Override
-            public TestGeneralObject getTestGeneralObject() {
+            public List<TestGeneralObject> getTestGeneralObject() {
                 TestGeneralObject testGeneralObject =  new TestGeneralObject();
                 testGeneralObject.test="test";
-                return testGeneralObject;
+                return Collections.singletonList(testGeneralObject);
             }
         },ITest.class);
     }

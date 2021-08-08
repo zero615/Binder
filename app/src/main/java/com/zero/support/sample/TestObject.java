@@ -3,8 +3,13 @@ package com.zero.support.sample;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TestObject implements Parcelable {
-    public String test;
+import com.zero.support.binder.BinderSerializable;
+
+import java.util.Arrays;
+
+public class TestObject implements Parcelable , BinderSerializable {
+    public String test="ff";
+    public String[] tests=new String[]{"xxx"};
 
     public TestObject() {
     }
@@ -23,6 +28,14 @@ public class TestObject implements Parcelable {
             return new TestObject[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "TestObject{" +
+                "test='" + test + '\'' +
+                ", tests=" + Arrays.toString(tests) +
+                '}';
+    }
 
     @Override
     public int describeContents() {
