@@ -9,28 +9,28 @@ public static final String ARRAY_CREATOR = "package com.zero.support.binder;\n" 
         "import java.lang.reflect.Type;\n" +
         "\n" +
         "@SuppressWarnings(\"ALL\")\n" +
-        "class ArrayCreator implements ParcelCreator<Object[]> {\n" +
+        "class ArrayCreator implements ParcelCreator<Object> {\n" +
         "\n" +
         "    @Override\n" +
-        "    public void writeToParcel(Parcel parcel, Object[] object, Type type, Class<Object[]> rawType) throws Exception {\n" +
-        "        Object[] target = (Object[]) object;\n" +
+        "    public void writeToParcel(Parcel parcel, Object object, Type type, Class<Object> rawType) throws Exception {\n" +
         "        if (object == null) {\n" +
         "            parcel.writeInt(-1);\n" +
         "            return;\n" +
         "        }\n" +
-        "        parcel.writeInt(target.length);\n" +
+        "        int len = Array.getLength(object);\n" +
+        "        parcel.writeInt(len);\n" +
         "        Class<?> subType = rawType.getComponentType();\n" +
         "        ParcelCreator creator = Binder.getParcelCreator(subType);\n" +
         "        if (creator == null) {\n" +
         "            throw new RuntimeException(\"not found creator for \" + subType);\n" +
         "        }\n" +
-        "        for (Object o : target) {\n" +
-        "            creator.writeToParcel(parcel, o, subType, subType);\n" +
+        "        for (int i = 0; i < len; i++) {\n" +
+        "            creator.writeToParcel(parcel, Array.get(object, i), subType, subType);\n" +
         "        }\n" +
         "    }\n" +
         "\n" +
         "    @Override\n" +
-        "    public Object[] readFromParcel(Parcel parcel, Type type, Class<Object[]> rawType) throws Exception {\n" +
+        "    public Object readFromParcel(Parcel parcel, Type type, Class<Object> rawType) throws Exception {\n" +
         "        int N = parcel.readInt();\n" +
         "        if (N == -1) {\n" +
         "            return null;\n" +
@@ -39,14 +39,14 @@ public static final String ARRAY_CREATOR = "package com.zero.support.binder;\n" 
         "        if (subType == null) {\n" +
         "            return null;\n" +
         "        }\n" +
-        "        Object[] list = (Object[]) Array.newInstance(subType, N);\n" +
+        "        Object list = Array.newInstance(subType, N);\n" +
         "\n" +
         "        ParcelCreator creator = Binder.getParcelCreator(subType);\n" +
         "        if (creator == null) {\n" +
         "            throw new RuntimeException(\"not found creator for \" + subType);\n" +
         "        }\n" +
         "        for (int i = 0; i < N; i++) {\n" +
-        "            list[i] = (creator.readFromParcel(parcel, subType, subType));\n" +
+        "            Array.set(list, i, creator.readFromParcel(parcel, subType, subType));\n" +
         "        }\n" +
         "        return list;\n" +
         "    }\n" +
@@ -723,6 +723,7 @@ public static final String ENTRANCE_PARCEL_CREATOR = "package com.zero.support.b
         "import android.os.Parcel;\n" +
         "import android.os.Parcelable;\n" +
         "\n" +
+        "import java.io.Serializable;\n" +
         "import java.lang.reflect.Array;\n" +
         "import java.lang.reflect.Type;\n" +
         "\n" +
@@ -732,7 +733,9 @@ public static final String ENTRANCE_PARCEL_CREATOR = "package com.zero.support.b
         "\n" +
         "    @Override\n" +
         "    public void writeToParcel(Parcel reply, Object object, Type type, Class rawType) throws Exception {\n" +
-        "        if (rawType.isInterface()) {\n" +
+        "        if (rawType == (IBinder.class)) {\n" +
+        "            reply.writeStrongBinder((IBinder) object);\n" +
+        "        } else if (rawType.isInterface()) {\n" +
         "            if (object == null) {\n" +
         "                reply.writeStrongBinder(null);\n" +
         "            } else {\n" +
@@ -761,8 +764,8 @@ public static final String ENTRANCE_PARCEL_CREATOR = "package com.zero.support.b
         "            reply.writeString((String) object);\n" +
         "        } else if (Bundle.class.isAssignableFrom(rawType)) {\n" +
         "            reply.writeBundle((Bundle) object);\n" +
-        "        } else if (rawType == (IBinder.class)) {\n" +
-        "            reply.writeStrongBinder((IBinder) object);\n" +
+        "        } else if (Serializable.class.isAssignableFrom(rawType)) {\n" +
+        "            reply.writeSerializable((Serializable) object);\n" +
         "        } else {\n" +
         "            ParcelCreator creator = getCreator(rawType);\n" +
         "            if (creator != null && creator != this) {\n" +
@@ -778,7 +781,9 @@ public static final String ENTRANCE_PARCEL_CREATOR = "package com.zero.support.b
         "    @Override\n" +
         "    public Object readFromParcel(Parcel data, Type type, Class rawType) throws Exception {\n" +
         "        Object object;\n" +
-        "        if (rawType.isInterface()) {\n" +
+        "        if (rawType == (IBinder.class)) {\n" +
+        "            object = data.readStrongBinder();\n" +
+        "        } else if (rawType.isInterface()) {\n" +
         "            IBinder binder = data.readStrongBinder();\n" +
         "            if (binder == null) {\n" +
         "                object = null;\n" +
@@ -810,8 +815,8 @@ public static final String ENTRANCE_PARCEL_CREATOR = "package com.zero.support.b
         "            object = data.readString();\n" +
         "        } else if (Bundle.class.isAssignableFrom(rawType)) {\n" +
         "            object = data.readBundle();\n" +
-        "        } else if (rawType == (IBinder.class)) {\n" +
-        "            object = data.readStrongBinder();\n" +
+        "        } else if (Serializable.class.isAssignableFrom(rawType)) {\n" +
+        "            object = data.readSerializable();\n" +
         "        } else {\n" +
         "            ParcelCreator creator = getCreator(rawType);\n" +
         "            if (creator != null && creator != this) {\n" +

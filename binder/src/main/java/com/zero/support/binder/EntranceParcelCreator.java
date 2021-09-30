@@ -5,6 +5,7 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
@@ -14,7 +15,9 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
 
     @Override
     public void writeToParcel(Parcel reply, Object object, Type type, Class rawType) throws Exception {
-        if (rawType.isInterface()) {
+        if (rawType == (IBinder.class)) {
+            reply.writeStrongBinder((IBinder) object);
+        } else if (rawType.isInterface()) {
             if (object == null) {
                 reply.writeStrongBinder(null);
             } else {
@@ -43,8 +46,8 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
             reply.writeString((String) object);
         } else if (Bundle.class.isAssignableFrom(rawType)) {
             reply.writeBundle((Bundle) object);
-        } else if (rawType == (IBinder.class)) {
-            reply.writeStrongBinder((IBinder) object);
+        } else if (Serializable.class.isAssignableFrom(rawType)) {
+            reply.writeSerializable((Serializable) object);
         } else {
             ParcelCreator creator = getCreator(rawType);
             if (creator != null && creator != this) {
@@ -60,7 +63,9 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
     @Override
     public Object readFromParcel(Parcel data, Type type, Class rawType) throws Exception {
         Object object;
-        if (rawType.isInterface()) {
+        if (rawType == (IBinder.class)) {
+            object = data.readStrongBinder();
+        } else if (rawType.isInterface()) {
             IBinder binder = data.readStrongBinder();
             if (binder == null) {
                 object = null;
@@ -92,8 +97,8 @@ class EntranceParcelCreator implements ParcelCreator<Object> {
             object = data.readString();
         } else if (Bundle.class.isAssignableFrom(rawType)) {
             object = data.readBundle();
-        } else if (rawType == (IBinder.class)) {
-            object = data.readStrongBinder();
+        } else if (Serializable.class.isAssignableFrom(rawType)) {
+            object = data.readSerializable();
         } else {
             ParcelCreator creator = getCreator(rawType);
             if (creator != null && creator != this) {
