@@ -54,6 +54,8 @@ public static final String ARRAY_CREATOR = "package com.zero.support.binder;\n" 
 public static final String BINDER = "package com.zero.support.binder;\n" +
         "\n" +
         "import android.os.IBinder;\n" +
+        "import android.os.Parcel;\n" +
+        "import android.os.Parcelable;\n" +
         "import android.util.SparseArray;\n" +
         "\n" +
         "import java.io.File;\n" +
@@ -77,9 +79,35 @@ public static final String BINDER = "package com.zero.support.binder;\n" +
         "        registerParcelCreator(SparseArray.class, new SparseArrayParcelCreator());\n" +
         "        registerParcelCreator(Map.class, new MapParcelCreator());\n" +
         "        registerParcelCreator(File.class, new FileParcelCreator());\n" +
-        "        registerParcelCreator(BinderSerializable.class,EntranceParcelCreator.GENERAL);\n" +
+        "        registerParcelCreator(BinderSerializable.class, EntranceParcelCreator.GENERAL);\n" +
         "    }\n" +
         "\n" +
+        "\n" +
+        "    public static class ParceleableCreater<T extends Parcelable> implements ParcelCreator<T> {\n" +
+        "        Parcelable.Creator<T> creator;\n" +
+        "\n" +
+        "        public ParceleableCreater(Parcelable.Creator<T> creator) {\n" +
+        "            this.creator = creator;\n" +
+        "        }\n" +
+        "\n" +
+        "        @Override\n" +
+        "        public void writeToParcel(Parcel parcel, T target, Type type, Class<T> rawType) throws Exception {\n" +
+        "            if (target != null) {\n" +
+        "                parcel.writeInt(0);\n" +
+        "                target.writeToParcel(parcel, 0);\n" +
+        "            } else {\n" +
+        "                parcel.writeInt(-1);\n" +
+        "            }\n" +
+        "        }\n" +
+        "\n" +
+        "        @Override\n" +
+        "        public T readFromParcel(Parcel parcel, Type type, Class<T> rawType) throws Exception {\n" +
+        "            if (parcel.readInt() < 0) {\n" +
+        "                return null;\n" +
+        "            }\n" +
+        "            return creator.createFromParcel(parcel);\n" +
+        "        }\n" +
+        "    }\n" +
         "\n" +
         "    public static void registerBinderCreator(Class<?> cls, BinderCreator<?> creator) {\n" +
         "        creators.put(cls, creator);\n" +
@@ -89,6 +117,9 @@ public static final String BINDER = "package com.zero.support.binder;\n" +
         "        parcelCreators.put(cls, creator);\n" +
         "    }\n" +
         "\n" +
+        "    public static void registerParcelCreator(Class<?> cls, Parcelable.Creator<?> creator) {\n" +
+        "        parcelCreators.put(cls, new ParceleableCreater(creator));\n" +
+        "    }\n" +
         "\n" +
         "\n" +
         "    public static BinderCreator<?> getBindCreator(Class<?> cls) {\n" +
